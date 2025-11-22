@@ -44,7 +44,7 @@ export default function AdjustmentForm() {
 
     return (
         <div className="max-w-2xl mx-auto">
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">New Stock Adjustment</h1>
+            <h1 className="text-2xl font-bold text-white mb-6">New Stock Adjustment</h1>
 
             <form onSubmit={handleSubmit} className="card space-y-6">
                 <div>

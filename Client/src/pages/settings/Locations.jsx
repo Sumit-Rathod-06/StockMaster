@@ -94,7 +94,7 @@ export default function Locations() {
                     >
                         <FiArrowLeft className="h-6 w-6" />
                     </button>
-                    <h1 className="text-2xl font-bold text-gray-900">Locations</h1>
+                    <h1 className="text-2xl font-bold text-white">Locations</h1>
                 </div>
                 <button
                     onClick={() => setShowForm(!showForm)}

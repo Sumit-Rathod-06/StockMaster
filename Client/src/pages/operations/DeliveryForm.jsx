@@ -64,7 +64,7 @@ export default function DeliveryForm() {
 
     return (
         <div className="max-w-4xl mx-auto">
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">New Delivery</h1>
+            <h1 className="text-2xl font-bold text-white mb-6">New Delivery</h1>
 
             <form onSubmit={handleSubmit} className="card space-y-6">
                 <div className="grid grid-cols-2 gap-4">

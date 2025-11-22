@@ -28,7 +28,7 @@ export default function Adjustments() {
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-gray-900">Stock Adjustments</h1>
+                <h1 className="text-2xl font-bold text-white">Stock Adjustments</h1>
                 <Link to="/adjustments/new" className="btn-primary flex items-center">
                     <FiPlus className="mr-2" /> New Adjustment
                 </Link>
