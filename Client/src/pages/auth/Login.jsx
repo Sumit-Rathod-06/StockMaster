@@ -7,7 +7,7 @@ import LightRays from '../../components/LightRays';
 export default function Login() {
     const navigate = useNavigate();
     const { login } = useAuth();
-    const [formData, setFormData] = useState({ email: '', password: '' });
+    const [formData, setFormData] = useState({ loginId: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -16,7 +16,7 @@ export default function Login() {
         setError('');
         setLoading(true);
 
-        const result = await login(formData.email, formData.password);
+        const result = await login(formData.loginId, formData.password);
 
         if (result.success) {
             navigate('/');
@@ -79,19 +79,27 @@ export default function Login() {
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-                                Email address
+                            <label 
+                                htmlFor="loginId" 
+                                className="block text-sm font-medium text-gray-300"
+                            >
+                                Login ID
                             </label>
+
                             <input
-                                id="email"
-                                type="email"
+                                id="loginId"
+                                name="loginId"
+                                type="text"
                                 required
                                 className="input-field mt-1"
-                                placeholder="you@example.com"
-                                value={formData.email}
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                placeholder="Enter your Login ID"
+                                value={formData.loginId}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, loginId: e.target.value })
+                                }
                             />
                         </div>
+
 
                         <div>
                             <label htmlFor="password" className="block text-sm font-medium text-gray-300">

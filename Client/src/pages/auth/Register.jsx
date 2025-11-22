@@ -8,11 +8,11 @@ export default function Register() {
     const navigate = useNavigate();
     const { register } = useAuth();
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
+        loginId: '',
+        emailId: '',
         password: '',
         confirmPassword: '',
-        role: 'warehouse_staff'
+        role: 'WarehouseStaff'
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -34,10 +34,11 @@ export default function Register() {
         setLoading(true);
 
         const { confirmPassword, ...userData } = formData;
-        const result = await register(userData);
+        const result = await register(userData.loginId, userData.emailId, userData.password, userData.role);
 
         if (result.success) {
-            navigate('/');
+            // After registration, redirect to login
+            navigate('/login');
         } else {
             setError(result.message);
         }
@@ -97,32 +98,32 @@ export default function Register() {
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-300">
+                            <label htmlFor="loginId" className="block text-sm font-medium text-gray-300">
                                 Login ID
                             </label>
                             <input
-                                id="name"
+                                id="loginId"
                                 type="text"
                                 required
                                 className="input-field mt-1"
                                 placeholder="your_login_id"
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                value={formData.loginId}
+                                onChange={(e) => setFormData({ ...formData, loginId: e.target.value })}
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+                            <label htmlFor="emailId" className="block text-sm font-medium text-gray-300">
                                 Email address
                             </label>
                             <input
-                                id="email"
+                                id="emailId"
                                 type="email"
                                 required
                                 className="input-field mt-1"
                                 placeholder="you@example.com"
-                                value={formData.email}
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                value={formData.emailId}
+                                onChange={(e) => setFormData({ ...formData, emailId: e.target.value })}
                             />
                         </div>
 
@@ -136,9 +137,9 @@ export default function Register() {
                                 value={formData.role}
                                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                             >
-                                <option value="warehouse_staff">Warehouse Staff</option>
-                                <option value="inventory_manager">Inventory Manager</option>
-                                <option value="admin">Admin</option>
+                                <option value="WarehouseStaff">Warehouse Staff</option>
+                                <option value="InventoryManager">Inventory Manager</option>
+                                <option value="Admin">Admin</option>
                             </select>
                         </div>
 
