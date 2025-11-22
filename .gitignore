@@ -3,7 +3,7 @@ client/node_modules/
 server/node_modules/
 
 # Environment variables
-server\src\config\.env
+Server/src/config/.env
 
 # Build files (if any)
 client/build/
@@ -12,7 +12,7 @@ server/build/
 server/dist/
 
 # Uploaded files
-server/uploads/
+Server/uploads/
 
 # Logs
 *.log

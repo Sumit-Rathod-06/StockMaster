@@ -1,412 +1,194 @@
-import React, { useState } from "react";
-import {
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  Phone,
-  User,
-  TrendingUp,
-  Shield,
-  Users,
-  Check,
-  X,
-} from "lucide-react";
-import BASE_URL from "../../assets/assests";
-import axios from "axios";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import BlobCursor from '../../components/BlobCursor';
+import LightRays from '../../components/LightRays';
 
-const RegisterPage = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+export default function Register() {
+    const navigate = useNavigate();
+    const { register } = useAuth();
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        role: 'warehouse_staff'
+    });
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    phone_number: "",
-    password: "",
-    confirmPassword: "",
-    role: "borrower", // ✅ Added role field (default borrower)
-  });
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
 
-  const [loading, setLoading] = useState(false);
+        if (formData.password !== formData.confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
 
-  // OTP states
-  const [emailVerified, setEmailVerified] = useState(false);
-  const [phoneVerified, setPhoneVerified] = useState(false);
+        if (formData.password.length < 6) {
+            setError('Password must be at least 6 characters');
+            return;
+        }
 
-  const [emailOtpSent, setEmailOtpSent] = useState(false);
-  const [phoneOtpSent, setPhoneOtpSent] = useState(false);
+        setLoading(true);
 
-  const [emailOtp, setEmailOtp] = useState("");
-  const [phoneOtp, setPhoneOtp] = useState("");
+        const { confirmPassword, ...userData } = formData;
+        const result = await register(userData);
 
-  const [error, setError] = useState("");
+        if (result.success) {
+            navigate('/');
+        } else {
+            setError(result.message);
+        }
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+        setLoading(false);
+    };
 
-  // Simulated send OTP (replace with API call)
-  const sendEmailOtp = () => {
-    setEmailOtpSent(true);
-    alert("OTP sent to Email!");
-  };
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-dark-50 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+            <LightRays
+                raysOrigin="top-center"
+                raysColor="#7c3aed"
+                raysSpeed={0.8}
+                lightSpread={0.6}
+                rayLength={1.5}
+                followMouse={true}
+                mouseInfluence={0.15}
+                noiseAmount={0.05}
+                distortion={0.03}
+            />
+            <BlobCursor
+                blobType="circle"
+                fillColor="#ffffff"
+                trailCount={3}
+                sizes={[50, 100, 65]}
+                innerSizes={[15, 30, 20]}
+                innerColor="rgba(0,0,0,0.3)"
+                opacities={[0.8, 0.6, 0.4]}
+                shadowColor="rgba(255,255,255,0.3)"
+                shadowBlur={10}
+                shadowOffsetX={0}
+                shadowOffsetY={0}
+                filterStdDeviation={25}
+                useFilter={true}
+                fastDuration={0.1}
+                slowDuration={0.5}
+                zIndex={1}
+            />
 
-  const sendPhoneOtp = () => {
-    setPhoneOtpSent(true);
-    alert("OTP sent to Phone!");
-  };
+            <div className="max-w-md w-full relative z-10">
+                <div className="bg-dark-100/80 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-dark-200">
+                    <div className="text-center mb-8">
+                        <div className="inline-block">
+                            <h2 className="text-4xl font-bold text-white">
+                                StockMaster
+                            </h2>
+                            <div className="h-1 bg-primary-500 rounded-full mt-2"></div>
+                        </div>
+                        <p className="mt-3 text-sm text-gray-400">Create your account</p>
+                    </div>
 
-  // Simulated verify OTP (replace with API call)
-  const verifyEmailOtp = () => {
-    if (emailOtp === "1234") {
-      setEmailVerified(true);
-      alert("Email Verified ✅");
-    } else {
-      alert("Invalid OTP ❌");
-    }
-  };
+                    {error && (
+                        <div className="mb-4 bg-red-900/30 border border-red-500/50 text-red-300 px-4 py-3 rounded-lg backdrop-blur-sm">
+                            {error}
+                        </div>
+                    )}
 
-  const verifyPhoneOtp = () => {
-    if (phoneOtp === "1234") {
-      setPhoneVerified(true);
-      alert("Phone Verified ✅");
-    } else {
-      alert("Invalid OTP ❌");
-    }
-  };
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <div>
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-300">
+                                Login ID
+                            </label>
+                            <input
+                                id="name"
+                                type="text"
+                                required
+                                className="input-field mt-1"
+                                placeholder="your_login_id"
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            />
+                        </div>
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+                        <div>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+                                Email address
+                            </label>
+                            <input
+                                id="email"
+                                type="email"
+                                required
+                                className="input-field mt-1"
+                                placeholder="you@example.com"
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            />
+                        </div>
 
-    if (!emailVerified || !phoneVerified) {
-      setError("Please verify both Email and Phone first!");
-      return;
-    }
+                        <div>
+                            <label htmlFor="role" className="block text-sm font-medium text-gray-300">
+                                Role
+                            </label>
+                            <select
+                                id="role"
+                                className="input-field mt-1"
+                                value={formData.role}
+                                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                            >
+                                <option value="warehouse_staff">Warehouse Staff</option>
+                                <option value="inventory_manager">Inventory Manager</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
 
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match!");
-      return;
-    }
+                        <div>
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-300">
+                                Password
+                            </label>
+                            <input
+                                id="password"
+                                type="password"
+                                required
+                                className="input-field mt-1"
+                                placeholder="••••••••"
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            />
+                        </div>
 
-    setLoading(true);
+                        <div>
+                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300">
+                                Confirm Password
+                            </label>
+                            <input
+                                id="confirmPassword"
+                                type="password"
+                                required
+                                className="input-field mt-1"
+                                placeholder="••••••••"
+                                value={formData.confirmPassword}
+                                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                            />
+                        </div>
 
-    try {
-      // ✅ Choose endpoint based on selected role
-      const endpoint =
-        formData.role === "borrower"
-          ? `${BASE_URL}/api/auth/register/borrower`
-          : `${BASE_URL}/api/auth/register/lender`;
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full btn-primary"
+                        >
+                            {loading ? 'Creating account...' : 'Register'}
+                        </button>
 
-      const response = await axios.post(endpoint, formData, {
-        headers: { "Content-Type": "application/json" },
-      });
-
-      alert("Registration Successful 🎉");
-      window.location.href = "/login";
-    } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="min-h-screen flex">
-      {/* Left Section */}
-      <div className="hidden md:flex flex-1 flex-col justify-center items-center bg-indigo-50 px-10">
-        <div className="flex flex-col items-center text-center max-w-md">
-          <div className="bg-indigo-600 p-4 rounded-lg mb-6">
-            <TrendingUp className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Peer Mint</h1>
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            Start Your Journey <br /> Towards Financial Freedom
-          </h2>
-          <p className="text-gray-600 mb-8">
-            Create your Peer Mint account to explore lending and borrowing
-            opportunities, grow your investments, and take the first step toward
-            a secure and empowered financial future.
-          </p>
-
-          <div className="flex items-center space-x-8 text-gray-700 text-sm">
-            <div className="flex items-center space-x-2">
-              <Shield className="w-4 h-4 text-indigo-600" />
-              <span>Bank-level Security</span>
+                        <p className="text-center text-sm text-gray-400">
+                            Already have an account?{' '}
+                            <Link to="/login" className="text-primary-400 hover:text-primary-300 font-medium transition-colors">
+                                Sign in here
+                            </Link>
+                        </p>
+                    </form>
+                </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <Users className="w-4 h-4 text-indigo-600" />
-              <span>10k+ Users</span>
-            </div>
-          </div>
         </div>
-      </div>
-
-      {/* Right Section (Register Card) */}
-      <div className="flex flex-1 justify-center items-center px-6 py-12 bg-white">
-        <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
-            Create Account
-          </h2>
-          <p className="text-gray-600 text-center mb-6">
-            Fill in the details to get started
-          </p>
-
-          {/* Error */}
-          {error && (
-            <div className="bg-red-100 text-red-600 text-sm p-2 rounded mb-4">
-              {error}
-            </div>
-          )}
-
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            {/* Role Selector ✅ */}
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Select Role
-              </label>
-              <select
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500"
-              >
-                <option value="borrower">Borrower</option>
-                <option value="lender">Lender</option>
-              </select>
-            </div>
-
-            {/* First Name */}
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                First Name
-              </label>
-              <div className="relative">
-                <User className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  name="first_name"
-                  value={formData.first_name}
-                  onChange={handleChange}
-                  required
-                  placeholder="John"
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-            </div>
-
-            {/* Last Name */}
-            <div>
-              <label className="block text-sm font-medium mb-1">Last Name</label>
-              <div className="relative">
-                <User className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  name="last_name"
-                  value={formData.last_name}
-                  onChange={handleChange}
-                  required
-                  placeholder="Doe"
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-            </div>
-
-            {/* Email + OTP */}
-            <div>
-              <label className="block text-sm font-medium mb-1">Email</label>
-              <div className="flex space-x-2">
-                <div className="relative flex-1">
-                  <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    placeholder="you@example.com"
-                    className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={sendEmailOtp}
-                  className="px-3 bg-indigo-600 text-white rounded-lg"
-                >
-                  Send OTP
-                </button>
-              </div>
-              <div className="flex items-center space-x-2 mt-2">
-                <span
-                  className={`text-sm font-medium flex items-center space-x-1 ${
-                    emailVerified ? "text-green-600" : "text-red-600"
-                  }`}
-                >
-                  {emailVerified ? <Check size={16} /> : <X size={16} />}
-                  <span>{emailVerified ? "Verified" : "Not Verified"}</span>
-                </span>
-              </div>
-
-              {emailOtpSent && !emailVerified && (
-                <div className="flex space-x-2 mt-2">
-                  <input
-                    type="text"
-                    value={emailOtp}
-                    onChange={(e) => setEmailOtp(e.target.value)}
-                    placeholder="Enter OTP"
-                    className="flex-1 px-3 py-2 border rounded-lg"
-                  />
-                  <button
-                    type="button"
-                    onClick={verifyEmailOtp}
-                    className="px-3 bg-green-600 text-white rounded-lg"
-                  >
-                    Verify
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Phone + OTP */}
-            <div>
-              <label className="block text-sm font-medium mb-1">Phone</label>
-              <div className="flex space-x-2">
-                <div className="relative flex-1">
-                  <Phone className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                  <input
-                    type="tel"
-                    name="phone_number"
-                    value={formData.phone_number}
-                    onChange={handleChange}
-                    required
-                    placeholder="+91 9876543210"
-                    className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={sendPhoneOtp}
-                  className="px-3 bg-indigo-600 text-white rounded-lg"
-                >
-                  Send OTP
-                </button>
-              </div>
-              <div className="flex items-center space-x-2 mt-2">
-                <span
-                  className={`text-sm font-medium flex items-center space-x-1 ${
-                    phoneVerified ? "text-green-600" : "text-red-600"
-                  }`}
-                >
-                  {phoneVerified ? <Check size={16} /> : <X size={16} />}
-                  <span>{phoneVerified ? "Verified" : "Not Verified"}</span>
-                </span>
-              </div>
-
-              {phoneOtpSent && !phoneVerified && (
-                <div className="flex space-x-2 mt-2">
-                  <input
-                    type="text"
-                    value={phoneOtp}
-                    onChange={(e) => setPhoneOtp(e.target.value)}
-                    placeholder="Enter OTP"
-                    className="flex-1 px-3 py-2 border rounded-lg"
-                  />
-                  <button
-                    type="button"
-                    onClick={verifyPhoneOtp}
-                    className="px-3 bg-green-600 text-white rounded-lg"
-                  >
-                    Verify
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-medium mb-1">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter password"
-                  className="w-full pl-10 pr-10 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-500"
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Re-enter Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                  placeholder="Re-enter password"
-                  className="w-full pl-10 pr-10 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-                />
-                <button
-                  type="button"
-                  onClick={() =>
-                    setShowConfirmPassword(!showConfirmPassword)
-                  }
-                  className="absolute right-3 top-3 text-gray-500"
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-indigo-700 hover:bg-indigo-800 text-white py-2 rounded-lg font-medium shadow disabled:opacity-50"
-            >
-              {loading ? "Registering..." : "Register"}
-            </button>
-          </form>
-
-          <p className="text-center text-sm text-gray-600 mt-6">
-            Already have an account?{" "}
-            <a
-              href="/login"
-              className="text-indigo-700 font-medium hover:underline"
-            >
-              Login
-            </a>
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default RegisterPage;
+    );
+}
