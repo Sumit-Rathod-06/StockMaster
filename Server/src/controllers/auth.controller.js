@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import db from "../config/db.js";
+import db from "../config/database.js";
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_ACCESS_SECRET, {

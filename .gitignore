@@ -1,18 +1,18 @@
 # Node modules
-Client/node_modules/
-Server/node_modules/
+client/node_modules/
+server/node_modules/
 
 # Environment variables
-Server/.env
+server\src\config\.env
 
 # Build files (if any)
-Client/build/
-Client/dist/
-Server/build/
-Server/dist/
+client/build/
+client/dist/
+server/build/
+server/dist/
 
 # Uploaded files
-Server/uploads/
+server/uploads/
 
 # Logs
 *.log

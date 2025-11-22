@@ -2,6 +2,12 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import auth_router from "./src/routes/auth.router.js";
+import dashboard_router from "./src/routes/dashboard.js";
+import product_router from "./src/routes/product.router.js";
+import category_router from "./src/routes/category.router.js";
+import receipt_router from "./src/routes/receipt.router.js";
+import delivery_router from "./src/routes/delivery.router.js";
+import adjustment_router from "./src/routes/adjustment.router.js";
 
 const app = express();
 
@@ -17,6 +23,12 @@ app.get("/", (req, res) => {
 });
 
 app.use('/api/auth', auth_router);
+app.use('/api/dashboard', dashboard_router);
+app.use('/api/products', product_router);
+app.use('/api/categories', category_router);
+app.use('/api/receipts', receipt_router);
+app.use('/api/deliveries', delivery_router);
+app.use('/api/adjustments', adjustment_router);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
