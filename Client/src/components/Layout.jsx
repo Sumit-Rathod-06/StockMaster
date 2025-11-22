@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
     FiHome, FiPackage, FiTruck, FiSend, FiRepeat,
-    FiEdit, FiBook, FiSettings, FiUser, FiLogOut, FiMenu, FiX
+    FiEdit, FiBook, FiSettings, FiUser, FiLogOut, FiMenu, FiX, FiClock
 } from 'react-icons/fi';
 import { useState } from 'react';
 
@@ -20,9 +20,8 @@ export default function Layout() {
             children: [
                 { name: 'Receipts', href: '/receipts', icon: FiTruck },
                 { name: 'Deliveries', href: '/deliveries', icon: FiSend },
-                { name: 'Transfers', href: '/transfers', icon: FiRepeat },
-                { name: 'Adjustments', href: '/adjustments', icon: FiEdit },
                 { name: 'Stock Ledger', href: '/ledger', icon: FiBook },
+                { name: 'Move History', href: '/move-history', icon: FiClock },
             ]
         },
         {

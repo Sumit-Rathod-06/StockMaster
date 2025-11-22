@@ -16,6 +16,7 @@ import TransferForm from './pages/operations/TransferForm';
 import Adjustments from './pages/operations/Adjustments';
 import AdjustmentForm from './pages/operations/AdjustmentForm';
 import StockLedger from './pages/operations/StockLedger';
+import MoveHistory from './pages/operations/MoveHistory';
 import Warehouses from './pages/settings/Warehouses';
 import WarehouseForm from './pages/settings/WarehouseForm';
 import Locations from './pages/settings/Locations';
@@ -57,6 +58,7 @@ function App() {
                     <Route path="adjustments/new" element={<AdjustmentForm />} />
 
                     <Route path="ledger" element={<StockLedger />} />
+                    <Route path="move-history" element={<MoveHistory />} />
 
                     <Route path="warehouses" element={<Warehouses />} />
                     <Route path="warehouses/new" element={<WarehouseForm />} />

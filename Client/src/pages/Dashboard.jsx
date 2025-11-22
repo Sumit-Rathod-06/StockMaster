@@ -172,7 +172,7 @@ export default function Dashboard() {
             <MagicBento
                 cards={bentoCards}
                 textAutoHide={true}
-                enableStars={false}
+                enableStars={true}
                 enableSpotlight={true}
                 enableBorderGlow={true}
                 enableTilt={true}
