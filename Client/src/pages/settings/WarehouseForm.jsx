@@ -62,7 +62,7 @@ export default function WarehouseForm() {
                 >
                     <FiArrowLeft className="h-6 w-6" />
                 </button>
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-white">
                     {id ? 'Edit Warehouse' : 'New Warehouse'}
                 </h1>
             </div>
