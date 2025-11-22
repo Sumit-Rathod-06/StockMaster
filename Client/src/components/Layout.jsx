@@ -5,6 +5,7 @@ import {
     FiEdit, FiBook, FiSettings, FiUser, FiLogOut, FiMenu, FiX, FiClock
 } from 'react-icons/fi';
 import { useState } from 'react';
+import Squares from './Squares';
 
 export default function Layout() {
     const { user, logout } = useAuth();
@@ -174,14 +175,27 @@ export default function Layout() {
             )}
 
             {/* Main content */}
-            <div className="md:pl-64 flex flex-col flex-1">
+            <div className="md:pl-64 flex flex-col flex-1 relative">
+                {/* Animated Background */}
+                <div className="fixed inset-0 md:left-64 pointer-events-none" style={{ zIndex: 0 }}>
+                    <Squares
+                        speed={0.5}
+                        squareSize={40}
+                        direction='diagonal'
+                        borderColor='rgba(255, 255, 255, 0.05)'
+                        hoverFillColor='rgba(255, 255, 255, 0.02)'
+                    />
+                </div>
+
                 <div className="sticky top-0 z-10 md:hidden flex items-center justify-between bg-dark-100 border-b border-dark-200 shadow-lg px-4 py-3">
                     <button onClick={() => setSidebarOpen(true)} className="text-gray-300">
                         <FiMenu className="h-6 w-6" />
                     </button>
                     <h1 className="text-xl font-bold text-white">StockMaster</h1>
                     <div className="w-6" />
-                </div>                <main className="flex-1">
+                </div>
+
+                <main className="flex-1 relative" style={{ zIndex: 1 }}>
                     <div className="py-6">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                             <Outlet />
