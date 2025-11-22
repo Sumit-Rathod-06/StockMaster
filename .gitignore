@@ -3,7 +3,7 @@ client/node_modules/
 server/node_modules/
 
 # Environment variables
-server\src\config\.env
+server/src/config/.env
 
 # Build files (if any)
 client/build/
