@@ -374,11 +374,56 @@ const getWarehouseAdjustmentHistory = async (req, res) => {
   }
 };
 
+// ============================================================================
+// GET STOCK LEDGER (All movements)
+// ============================================================================
+const getStockLedger = async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        sl.id,
+        sl.product_id,
+        sl.warehouse_id,
+        sl.change,
+        sl.type,
+        sl.reference_type,
+        sl.reference_id,
+        sl.reference_number,
+        sl.notes,
+        sl.created_at,
+        p.name as product_name,
+        p.sku,
+        w.name as warehouse_name,
+        u.name as created_by_name
+      FROM stock_ledger sl
+      LEFT JOIN products p ON sl.product_id = p.id
+      LEFT JOIN warehouses w ON sl.warehouse_id = w.id
+      LEFT JOIN users u ON sl.created_by = u.id
+      ORDER BY sl.created_at DESC
+      LIMIT 500;
+    `;
+
+    const result = await db.query(query);
+
+    res.status(200).json({
+      success: true,
+      data: result.rows
+    });
+  } catch (error) {
+    console.error("Error fetching stock ledger:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching stock ledger"
+    });
+  }
+};
+
 export {
   createAdjustment,
   getAllAdjustments,
   getAdjustmentById,
   getAdjustmentsByReason,
   getProductAdjustmentHistory,
-  getWarehouseAdjustmentHistory
+  getWarehouseAdjustmentHistory,
+  getStockLedger
 };

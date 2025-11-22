@@ -9,9 +9,17 @@ const generateToken = (id) => {
 };
 
 const register = async (req, res) => {
-  const { loginId, emailId, password, role} = req.body;
+  const { loginId, emailId, password, role } = req.body;
   console.log(req.body);
   try {
+    // Validate required fields
+    if (!loginId || !emailId || !password || !role) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required: loginId, emailId, password, role"
+      });
+    }
+
     const userExists = await db.query("SELECT * FROM users WHERE email = $1", [
       emailId,
     ]);
@@ -53,6 +61,14 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { loginId, password } = req.body;
   try {
+    // Validate required fields
+    if (!loginId || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "LoginId and password are required"
+      });
+    }
+
     const { rows } = await db.query("SELECT * FROM users WHERE id = $1", [
       loginId,
     ]);
@@ -61,13 +77,13 @@ const login = async (req, res) => {
     if (user && (await bcrypt.compare(password, user.password_hash))) {
       res.json({
         success: true,
-        token: generateToken(user.borrower_id),
+        token: generateToken(user.id),
         user: { id: user.id, email: user.email, role: user.role },
       });
     } else {
       res
         .status(401)
-        .json({ success: false, message: "Invalid email or password" });
+        .json({ success: false, message: "Invalid login ID or password" });
     }
   } catch (error) {
     console.error("Login Error:", error);

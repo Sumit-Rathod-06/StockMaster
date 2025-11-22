@@ -10,25 +10,25 @@ export default function Profile() {
 
             <div className="card space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Name</label>
-                    <p className="mt-1 text-gray-900">{user?.name}</p>
+                    <label className="block text-sm font-medium text-gray-300">Name</label>
+                    <p className="mt-1 text-white">{user?.name}</p>
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Email</label>
-                    <p className="mt-1 text-gray-900">{user?.email}</p>
+                    <label className="block text-sm font-medium text-gray-300">Email</label>
+                    <p className="mt-1 text-white">{user?.email}</p>
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Role</label>
+                    <label className="block text-sm font-medium text-gray-300">Role</label>
                     <p className="mt-1">
                         <span className="badge badge-ready capitalize">{user?.role?.replace('_', ' ')}</span>
                     </p>
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Account ID</label>
-                    <p className="mt-1 text-xs text-gray-500 font-mono">{user?.id}</p>
+                    <label className="block text-sm font-medium text-gray-300">Account ID</label>
+                    <p className="mt-1 text-xs text-gray-400 font-mono">{user?.id}</p>
                 </div>
             </div>
         </div>

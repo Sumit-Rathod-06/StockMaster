@@ -52,7 +52,7 @@ export default function Products() {
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-bold text-white">Products</h1>
-                    <p className="mt-1 text-sm text-gray-600">Manage your product inventory</p>
+                    <p className="mt-1 text-sm text-gray-400">Manage your product inventory</p>
                 </div>
                 <Link to="/products/new" className="btn-primary flex items-center">
                     <FiPlus className="mr-2" /> Add Product
@@ -87,57 +87,57 @@ export default function Products() {
                 {products.length === 0 ? (
                     <div className="text-center py-12">
                         <FiPackage className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-600">No products found</p>
+                        <p className="text-gray-400">No products found</p>
                     </div>
                 ) : (
-                    <table className="min-w-full divide-y divide-gray-200">
+                    <table className="min-w-full divide-y divide-dark-300">
                         <thead>
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                                     Product
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                                     SKU
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                                     Category
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                                     Total Stock
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                                     Unit
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
                                     Actions
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="divide-y divide-dark-300">
                             {products.map((product) => {
                                 const totalStock = getTotalStock(product.stocks || []);
                                 const isLowStock = totalStock <= parseFloat(product.minStockLevel);
 
                                 return (
-                                    <tr key={product.id}>
+                                    <tr key={product.id} className="hover:bg-dark-200/30 transition-colors">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
                                                 <FiPackage className="h-5 w-5 text-gray-400 mr-2" />
-                                                <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                                                <div className="text-sm font-medium text-white">{product.name}</div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                                             {product.sku}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                                             {product.category_name || '-'}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className={`text-sm font-semibold ${isLowStock ? 'text-red-600' : 'text-gray-900'}`}>
+                                            <span className={`text-sm font-semibold ${isLowStock ? 'text-red-400' : 'text-white'}`}>
                                                 {totalStock.toFixed(2)}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                                             {product.uom}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

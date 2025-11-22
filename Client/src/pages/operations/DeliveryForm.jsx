@@ -8,18 +8,27 @@ export default function DeliveryForm() {
     const [warehouses, setWarehouses] = useState([]);
     const [products, setProducts] = useState([]);
     const [formData, setFormData] = useState({
-        customer: '',
-        warehouseId: '',
-        scheduledDate: '',
+        reference: '',
+        customer_id: '',
+        warehouse_id: '',
+        scheduled_date: '',
+        delivery_address: '',
         notes: '',
         items: []
     });
 
     useEffect(() => {
         fetchData();
-    }, []);
-
-    const fetchData = async () => {
+        // Generate reference number and set defaults
+        const today = new Date().toISOString().split('T')[0];
+        setFormData(prev => ({
+            ...prev,
+            reference: `DEL-${Date.now()}`,
+            scheduled_date: today,
+            customer_id: null,
+            delivery_address: 'Main Office'
+        }));
+    }, []); const fetchData = async () => {
         try {
             const [warehousesRes, productsRes] = await Promise.all([
                 api.get('/warehouses'),
@@ -55,10 +64,20 @@ export default function DeliveryForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/deliveries', formData);
+            // Send only the fields backend expects
+            const payload = {
+                reference: formData.reference,
+                customer_id: formData.customer_id,
+                warehouse_id: formData.warehouse_id,
+                scheduled_date: formData.scheduled_date,
+                delivery_address: formData.delivery_address,
+                notes: formData.notes
+            };
+            await api.post('/deliveries', payload);
             navigate('/deliveries');
         } catch (error) {
-            alert('Failed to create delivery');
+            console.error('Error creating delivery:', error);
+            alert('Failed to create delivery: ' + (error.response?.data?.message || error.message));
         }
     };
 
@@ -69,22 +88,12 @@ export default function DeliveryForm() {
             <form onSubmit={handleSubmit} className="card space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Customer</label>
-                        <input
-                            type="text"
-                            required
-                            className="input-field mt-1"
-                            value={formData.customer}
-                            onChange={(e) => setFormData({ ...formData, customer: e.target.value })}
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Warehouse</label>
+                        <label className="block text-sm font-medium text-gray-300">Warehouse</label>
                         <select
                             required
                             className="input-field mt-1"
-                            value={formData.warehouseId}
-                            onChange={(e) => setFormData({ ...formData, warehouseId: e.target.value })}
+                            value={formData.warehouse_id}
+                            onChange={(e) => setFormData({ ...formData, warehouse_id: e.target.value })}
                         >
                             <option value="">Select Warehouse</option>
                             {warehouses.map((wh) => (
@@ -95,17 +104,28 @@ export default function DeliveryForm() {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Scheduled Date</label>
+                    <label className="block text-sm font-medium text-gray-300">Scheduled Date</label>
                     <input
                         type="date"
                         className="input-field mt-1"
-                        value={formData.scheduledDate}
-                        onChange={(e) => setFormData({ ...formData, scheduledDate: e.target.value })}
+                        value={formData.scheduled_date || new Date().toISOString().split('T')[0]}
+                        onChange={(e) => setFormData({ ...formData, scheduled_date: e.target.value })}
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Items</label>
+                    <label className="block text-sm font-medium text-gray-300">Delivery Address</label>
+                    <input
+                        type="text"
+                        placeholder="Enter delivery address"
+                        className="input-field mt-1"
+                        value={formData.delivery_address}
+                        onChange={(e) => setFormData({ ...formData, delivery_address: e.target.value })}
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Items</label>
                     {formData.items.map((item, index) => (
                         <div key={index} className="flex gap-2 mb-2">
                             <select
@@ -134,7 +154,7 @@ export default function DeliveryForm() {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Notes</label>
+                    <label className="block text-sm font-medium text-gray-300">Notes</label>
                     <textarea
                         rows="3"
                         className="input-field mt-1"

@@ -51,14 +51,9 @@ export default function Receipts() {
                     <h1 className="text-2xl font-bold text-white">Receipts</h1>
                     <p className="text-sm text-gray-400 mt-1">Manage incoming stock operations</p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <button onClick={() => setSelectedReceiptId('preview')} className="btn-secondary flex items-center">
-                        Preview Modal
-                    </button>
-                    <Link to="/receipts/new" className="btn-primary flex items-center">
-                        <FiPlus className="mr-2" /> New
-                    </Link>
-                </div>
+                <Link to="/receipts/new" className="btn-primary flex items-center">
+                    <FiPlus className="mr-2" /> New
+                </Link>
             </div>
 
             {/* Last 3 Receipts Summary */}
@@ -67,7 +62,7 @@ export default function Receipts() {
                     <h3 className="text-lg font-semibold text-white mb-4">Last 3 Receipts</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {lastThreeReceipts.map((receipt) => (
-                            <div 
+                            <div
                                 key={receipt.id}
                                 onClick={() => setSelectedReceiptId(receipt.id)}
                                 className="p-4 bg-dark-200/50 rounded-lg border border-dark-300 hover:border-primary-600/50 transition-colors cursor-pointer"

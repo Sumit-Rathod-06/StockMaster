@@ -104,8 +104,8 @@ export default function MoveHistory() {
                         <button
                             onClick={() => setViewMode('list')}
                             className={`p-2 rounded transition-colors ${viewMode === 'list'
-                                    ? 'bg-primary-600 text-white'
-                                    : 'text-gray-400 hover:text-gray-200'
+                                ? 'bg-primary-600 text-white'
+                                : 'text-gray-400 hover:text-gray-200'
                                 }`}
                             title="List View"
                         >
@@ -114,8 +114,8 @@ export default function MoveHistory() {
                         <button
                             onClick={() => setViewMode('kanban')}
                             className={`p-2 rounded transition-colors ${viewMode === 'kanban'
-                                    ? 'bg-primary-600 text-white'
-                                    : 'text-gray-400 hover:text-gray-200'
+                                ? 'bg-primary-600 text-white'
+                                : 'text-gray-400 hover:text-gray-200'
                                 }`}
                             title="Kanban View"
                         >

@@ -50,11 +50,11 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (loginId, emailId, password, role = 'InventoryManager') => {
         try {
-            const response = await api.post('/auth/register', { 
-                loginId, 
-                emailId, 
+            const response = await api.post('/auth/register', {
+                loginId,
+                emailId,
                 password,
-                role 
+                role
             });
             if (response.data.success) {
                 // Note: Register endpoint doesn't return token, only user data

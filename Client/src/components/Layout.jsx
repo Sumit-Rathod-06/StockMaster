@@ -43,7 +43,7 @@ export default function Layout() {
     return (
         <div className="min-h-screen bg-dark-50">
             {/* Sidebar for desktop */}
-            <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
+            <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col z-20">
                 <div className="flex flex-col flex-grow pt-5 bg-dark-100 border-r border-dark-200 overflow-y-auto">
                     <div className="flex items-center flex-shrink-0 px-4">
                         <h1 className="text-2xl font-bold text-white">StockMaster</h1>
@@ -182,8 +182,8 @@ export default function Layout() {
                         speed={0.5}
                         squareSize={40}
                         direction='diagonal'
-                        borderColor='rgba(255, 255, 255, 0.05)'
-                        hoverFillColor='rgba(255, 255, 255, 0.02)'
+                        borderColor='rgba(255, 255, 255, 0.15)'
+                        hoverFillColor='rgba(255, 255, 255, 0.05)'
                     />
                 </div>
 
@@ -195,7 +195,7 @@ export default function Layout() {
                     <div className="w-6" />
                 </div>
 
-                <main className="flex-1 relative" style={{ zIndex: 1 }}>
+                <main className="flex-1 relative" style={{ zIndex: 10 }}>
                     <div className="py-6">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                             <Outlet />

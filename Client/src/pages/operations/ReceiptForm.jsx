@@ -5,21 +5,30 @@ import api from '../../api/api';
 export default function ReceiptForm() {
     const navigate = useNavigate();
     const [warehouses, setWarehouses] = useState([]);
+    const [suppliers, setSuppliers] = useState([]);
     const [products, setProducts] = useState([]);
     const [formData, setFormData] = useState({
-        supplier: '',
-        warehouseId: '',
-        scheduledDate: '',
-        responsible: '',
+        reference: '',
+        supplier_id: null,
+        supplier_name: '',
+        warehouse_id: '',
+        expected_date: '',
         notes: '',
         items: []
     });
 
     useEffect(() => {
         fetchData();
-    }, []);
-
-    const fetchData = async () => {
+        // Generate reference number and set defaults
+        const today = new Date().toISOString().split('T')[0];
+        setFormData(prev => ({
+            ...prev,
+            reference: `RCPT-${Date.now()}`,
+            expected_date: today,
+            supplier_id: null,
+            supplier_name: ''
+        }));
+    }, []); const fetchData = async () => {
         try {
             const [warehousesRes, productsRes] = await Promise.all([
                 api.get('/warehouses'),
@@ -27,6 +36,8 @@ export default function ReceiptForm() {
             ]);
             setWarehouses(warehousesRes.data.data);
             setProducts(productsRes.data.data);
+            // For now, suppliers will be entered as text since there's no suppliers endpoint
+            setSuppliers([]);
         } catch (error) {
             console.error('Failed to fetch data:', error);
         }
@@ -55,10 +66,19 @@ export default function ReceiptForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/receipts', formData);
+            // Send only the fields backend expects
+            const payload = {
+                reference: formData.reference,
+                supplier_id: formData.supplier_id,
+                warehouse_id: formData.warehouse_id,
+                expected_date: formData.expected_date,
+                notes: formData.notes
+            };
+            await api.post('/receipts', payload);
             navigate('/receipts');
         } catch (error) {
-            alert('Failed to create receipt');
+            console.error('Error creating receipt:', error);
+            alert('Failed to create receipt: ' + (error.response?.data?.message || error.message));
         }
     };
 
@@ -69,22 +89,12 @@ export default function ReceiptForm() {
             <form onSubmit={handleSubmit} className="magic-bento-card magic-bento-card--border-glow" style={{ aspectRatio: 'auto', minHeight: '500px' }}>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-300">Supplier</label>
-                        <input
-                            type="text"
-                            required
-                            className="input-field mt-1"
-                            value={formData.supplier}
-                            onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
-                        />
-                    </div>
-                    <div>
                         <label className="block text-sm font-medium text-gray-300">Warehouse</label>
                         <select
                             required
                             className="input-field mt-1"
-                            value={formData.warehouseId}
-                            onChange={(e) => setFormData({ ...formData, warehouseId: e.target.value })}
+                            value={formData.warehouse_id}
+                            onChange={(e) => setFormData({ ...formData, warehouse_id: e.target.value })}
                         >
                             <option value="">Select Warehouse</option>
                             {warehouses.map((wh) => (
@@ -92,24 +102,35 @@ export default function ReceiptForm() {
                             ))}
                         </select>
                     </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-300">Supplier Name</label>
+                        <input
+                            type="text"
+                            placeholder="Enter supplier name"
+                            className="input-field mt-1"
+                            value={formData.supplier_name}
+                            onChange={(e) => setFormData({ ...formData, supplier_name: e.target.value })}
+                        />
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-300">Scheduled Date</label>
+                        <label className="block text-sm font-medium text-gray-300">Expected Date</label>
                         <input
                             type="date"
                             className="input-field mt-1"
-                            value={formData.scheduledDate}
-                            onChange={(e) => setFormData({ ...formData, scheduledDate: e.target.value })}
+                            value={formData.expected_date || new Date().toISOString().split('T')[0]}
+                            onChange={(e) => setFormData({ ...formData, expected_date: e.target.value })}
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-300">Responsible</label>
+                        <label className="block text-sm font-medium text-gray-300">Responsible Person</label>
                         <input
                             type="text"
+                            placeholder="Enter responsible person"
                             className="input-field mt-1"
-                            value={formData.responsible}
+                            value={formData.responsible || ''}
                             onChange={(e) => setFormData({ ...formData, responsible: e.target.value })}
                         />
                     </div>
