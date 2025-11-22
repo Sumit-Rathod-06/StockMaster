@@ -1,13 +1,11 @@
-// Warehouses management
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
-import { FiPlus, FiEdit, FiTrash2 } from 'react-icons/fi';
+import { FiPlus, FiEdit, FiTrash2, FiMapPin } from 'react-icons/fi';
 
 export default function Warehouses() {
+    const navigate = useNavigate();
     const [warehouses, setWarehouses] = useState([]);
-    const [showForm, setShowForm] = useState(false);
-    const [formData, setFormData] = useState({ name: '', code: '', location: '', address: '' });
-    const [editId, setEditId] = useState(null);
 
     useEffect(() => {
         fetchWarehouses();
@@ -16,41 +14,20 @@ export default function Warehouses() {
     const fetchWarehouses = async () => {
         try {
             const res = await api.get('/warehouses');
-            setWarehouses(res.data.data);
+            setWarehouses(res.data.data || []);
         } catch (error) {
             console.error('Failed to fetch warehouses:', error);
+            setWarehouses([]);
         }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            if (editId) {
-                await api.put(`/warehouses/${editId}`, formData);
-            } else {
-                await api.post('/warehouses', formData);
-            }
-            setFormData({ name: '', code: '', location: '', address: '' });
-            setEditId(null);
-            setShowForm(false);
-            fetchWarehouses();
-        } catch (error) {
-            alert('Failed to save warehouse');
-        }
-    };
-
-    const handleEdit = (warehouse) => {
-        setFormData(warehouse);
-        setEditId(warehouse.id);
-        setShowForm(true);
     };
 
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure?')) return;
+        if (!confirm('Are you sure you want to delete this warehouse?')) return;
         try {
             await api.delete(`/warehouses/${id}`);
             fetchWarehouses();
         } catch (error) {
+            console.error('Failed to delete warehouse:', error);
             alert('Failed to delete warehouse');
         }
     };
@@ -59,73 +36,65 @@ export default function Warehouses() {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold text-gray-900">Warehouses</h1>
-                <button onClick={() => setShowForm(!showForm)} className="btn-primary flex items-center">
-                    <FiPlus className="mr-2" /> Add Warehouse
+                <button
+                    onClick={() => navigate('/warehouses/new')}
+                    className="btn-primary flex items-center gap-2"
+                >
+                    <FiPlus className="h-4 w-4" />
+                    Add Warehouse
                 </button>
             </div>
 
-            {showForm && (
-                <form onSubmit={handleSubmit} className="card space-y-4">
-                    <h3 className="text-lg font-semibold">{editId ? 'Edit' : 'New'} Warehouse</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                        <input
-                            type="text"
-                            placeholder="Name"
-                            required
-                            className="input-field"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        />
-                        <input
-                            type="text"
-                            placeholder="Code"
-                            required
-                            className="input-field"
-                            value={formData.code}
-                            onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                        />
-                    </div>
-                    <input
-                        type="text"
-                        placeholder="Location"
-                        className="input-field"
-                        value={formData.location}
-                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    />
-                    <textarea
-                        placeholder="Address"
-                        rows="2"
-                        className="input-field"
-                        value={formData.address}
-                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                    />
-                    <div className="flex gap-2">
-                        <button type="submit" className="btn-primary">Save</button>
-                        <button type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="btn-secondary">Cancel</button>
-                    </div>
-                </form>
-            )}
+            <div className="card bg-gray-50 border border-gray-200">
+                <p className="text-sm text-gray-600 italic">
+                    This page contains the warehouse details & location.
+                </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {warehouses.map((wh) => (
-                    <div key={wh.id} className="card">
-                        <div className="flex justify-between items-start mb-2">
-                            <h3 className="text-lg font-semibold text-gray-900">{wh.name}</h3>
+                    <div key={wh.id} className="card hover:shadow-lg transition-shadow">
+                        <div className="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 className="text-lg font-semibold text-gray-900">{wh.name}</h3>
+                                <p className="text-sm text-gray-500 mt-1">Code: {wh.code}</p>
+                            </div>
                             <div className="flex gap-2">
-                                <button onClick={() => handleEdit(wh)} className="text-primary-600 hover:text-primary-900">
-                                    <FiEdit />
+                                <button
+                                    onClick={() => navigate(`/warehouses/${wh.id}`)}
+                                    className="text-primary-600 hover:text-primary-900 transition-colors"
+                                >
+                                    <FiEdit className="h-4 w-4" />
                                 </button>
-                                <button onClick={() => handleDelete(wh.id)} className="text-red-600 hover:text-red-900">
-                                    <FiTrash2 />
+                                <button
+                                    onClick={() => handleDelete(wh.id)}
+                                    className="text-red-600 hover:text-red-900 transition-colors"
+                                >
+                                    <FiTrash2 className="h-4 w-4" />
                                 </button>
                             </div>
                         </div>
-                        <p className="text-sm text-gray-500">Code: {wh.code}</p>
-                        {wh.location && <p className="text-sm text-gray-500">Location: {wh.location}</p>}
-                        {wh.address && <p className="text-sm text-gray-500 mt-2">{wh.address}</p>}
+                        {wh.address && (
+                            <p className="text-sm text-gray-600 mb-3 pb-3 border-b border-gray-200">
+                                {wh.address}
+                            </p>
+                        )}
+                        <button
+                            onClick={() => navigate('/locations')}
+                            className="w-full mt-2 flex items-center justify-center gap-2 text-sm text-primary-600 hover:text-primary-900 font-medium transition-colors"
+                        >
+                            <FiMapPin className="h-4 w-4" />
+                            View Locations
+                        </button>
                     </div>
                 ))}
             </div>
+
+            {warehouses.length === 0 && (
+                <div className="text-center py-12">
+                    <p className="text-gray-500">No warehouses found. Add your first warehouse to get started.</p>
+                </div>
+            )}
         </div>
     );
 }

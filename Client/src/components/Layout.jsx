@@ -25,7 +25,14 @@ export default function Layout() {
                 { name: 'Stock Ledger', href: '/ledger', icon: FiBook },
             ]
         },
-        { name: 'Warehouses', href: '/warehouses', icon: FiSettings },
+        {
+            name: 'Settings',
+            icon: FiSettings,
+            children: [
+                { name: 'Warehouses', href: '/warehouses', icon: FiSettings },
+                { name: 'Locations', href: '/locations', icon: FiSettings },
+            ]
+        },
     ];
 
     const isActive = (href) => {

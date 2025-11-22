@@ -17,6 +17,8 @@ import Adjustments from './pages/operations/Adjustments';
 import AdjustmentForm from './pages/operations/AdjustmentForm';
 import StockLedger from './pages/operations/StockLedger';
 import Warehouses from './pages/settings/Warehouses';
+import WarehouseForm from './pages/settings/WarehouseForm';
+import Locations from './pages/settings/Locations';
 import Profile from './pages/Profile';
 
 function PrivateRoute({ children }) {
@@ -57,6 +59,10 @@ function App() {
                     <Route path="ledger" element={<StockLedger />} />
 
                     <Route path="warehouses" element={<Warehouses />} />
+                    <Route path="warehouses/new" element={<WarehouseForm />} />
+                    <Route path="warehouses/:id" element={<WarehouseForm />} />
+                    <Route path="locations" element={<Locations />} />
+
                     <Route path="profile" element={<Profile />} />
                 </Route>
             </Routes>
