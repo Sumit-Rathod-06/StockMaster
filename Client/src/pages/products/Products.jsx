@@ -18,7 +18,7 @@ export default function Products() {
         try {
             const [productsRes, categoriesRes] = await Promise.all([
                 api.get(`/products?search=${search}&categoryId=${selectedCategory}`),
-                api.get('/products/categories/all')
+                api.get('/categories')
             ]);
             setProducts(productsRes.data.data);
             setCategories(categoriesRes.data.data);
@@ -84,69 +84,76 @@ export default function Products() {
 
             {/* Products Table */}
             <div className="card overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead>
-                        <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Product
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                SKU
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Category
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Total Stock
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Unit
-                            </th>
-                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {products.map((product) => {
-                            const totalStock = getTotalStock(product.stocks || []);
-                            const isLowStock = totalStock <= parseFloat(product.minStockLevel);
+                {products.length === 0 ? (
+                    <div className="text-center py-12">
+                        <FiPackage className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                        <p className="text-gray-600">No products found</p>
+                    </div>
+                ) : (
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Product
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    SKU
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Category
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Total Stock
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Unit
+                                </th>
+                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {products.map((product) => {
+                                const totalStock = getTotalStock(product.stocks || []);
+                                const isLowStock = totalStock <= parseFloat(product.minStockLevel);
 
-                            return (
-                                <tr key={product.id}>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center">
-                                            <FiPackage className="h-5 w-5 text-gray-400 mr-2" />
-                                            <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {product.sku}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {product.category?.name || '-'}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`text-sm font-semibold ${isLowStock ? 'text-red-600' : 'text-gray-900'}`}>
-                                            {totalStock.toFixed(2)}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {product.unitOfMeasure}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <Link to={`/products/${product.id}`} className="text-primary-600 hover:text-primary-900 mr-4">
-                                            <FiEdit className="inline h-4 w-4" />
-                                        </Link>
-                                        <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:text-red-900">
-                                            <FiTrash2 className="inline h-4 w-4" />
-                                        </button>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                return (
+                                    <tr key={product.id}>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex items-center">
+                                                <FiPackage className="h-5 w-5 text-gray-400 mr-2" />
+                                                <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {product.sku}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {product.category_name || '-'}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <span className={`text-sm font-semibold ${isLowStock ? 'text-red-600' : 'text-gray-900'}`}>
+                                                {totalStock.toFixed(2)}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {product.uom}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <Link to={`/products/${product.id}`} className="text-primary-600 hover:text-primary-900 mr-4">
+                                                <FiEdit className="inline h-4 w-4" />
+                                            </Link>
+                                            <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:text-red-900">
+                                                <FiTrash2 className="inline h-4 w-4" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                )}
             </div>
         </div>
     );

@@ -55,7 +55,7 @@ export default function Warehouses() {
                 {warehouses.map((wh) => (
                     <div key={wh.id} className="card hover:shadow-lg transition-shadow">
                         <div className="flex justify-between items-start mb-3">
-                            <div>
+                            <div className="flex-1">
                                 <h3 className="text-lg font-semibold text-gray-900">{wh.name}</h3>
                                 <p className="text-sm text-gray-500 mt-1">Code: {wh.code}</p>
                             </div>
@@ -74,11 +74,26 @@ export default function Warehouses() {
                                 </button>
                             </div>
                         </div>
+                        
                         {wh.address && (
-                            <p className="text-sm text-gray-600 mb-3 pb-3 border-b border-gray-200">
-                                {wh.address}
+                            <p className="text-sm text-gray-600 mb-2">
+                                📍 {wh.address}
                             </p>
                         )}
+                        
+                        {(wh.city || wh.state || wh.postal_code) && (
+                            <p className="text-xs text-gray-500 mb-3 pb-3 border-b border-gray-200">
+                                {[wh.city, wh.state, wh.postal_code, wh.country].filter(Boolean).join(', ')}
+                            </p>
+                        )}
+                        
+                        {(wh.contact_person || wh.contact_phone) && (
+                            <div className="mb-3 pb-3 border-b border-gray-200 text-xs">
+                                {wh.contact_person && <p className="text-gray-700"><strong>Contact:</strong> {wh.contact_person}</p>}
+                                {wh.contact_phone && <p className="text-gray-700"><strong>Phone:</strong> {wh.contact_phone}</p>}
+                            </div>
+                        )}
+                        
                         <button
                             onClick={() => navigate('/locations')}
                             className="w-full mt-2 flex items-center justify-center gap-2 text-sm text-primary-600 hover:text-primary-900 font-medium transition-colors"

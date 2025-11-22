@@ -28,18 +28,20 @@ export default function Receipts() {
     };
 
     const filteredReceipts = receipts.filter(receipt =>
-        receipt.receiptNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        receipt.supplier?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        receipt.contactPerson?.toLowerCase().includes(searchQuery.toLowerCase())
+        receipt.reference?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        receipt.supplier_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        receipt.created_by_name?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const groupedByStatus = {
-        ready: filteredReceipts.filter(r => r.status === 'ready'),
-        waiting: filteredReceipts.filter(r => r.status === 'waiting'),
-        done: filteredReceipts.filter(r => r.status === 'done')
+        ready: filteredReceipts.filter(r => r.status?.toLowerCase() === 'ready'),
+        waiting: filteredReceipts.filter(r => r.status?.toLowerCase() === 'waiting'),
+        done: filteredReceipts.filter(r => r.status?.toLowerCase() === 'done')
     };
 
     if (loading) return <div className="text-center py-12 text-gray-400">Loading...</div>;
+
+    const lastThreeReceipts = receipts.slice(0, 3);
 
     return (
         <div className="space-y-6">
@@ -58,6 +60,34 @@ export default function Receipts() {
                     </Link>
                 </div>
             </div>
+
+            {/* Last 3 Receipts Summary */}
+            {lastThreeReceipts.length > 0 && (
+                <div className="magic-bento-card magic-bento-card--border-glow" style={{ aspectRatio: 'auto', minHeight: 'auto' }}>
+                    <h3 className="text-lg font-semibold text-white mb-4">Last 3 Receipts</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {lastThreeReceipts.map((receipt) => (
+                            <div 
+                                key={receipt.id}
+                                onClick={() => setSelectedReceiptId(receipt.id)}
+                                className="p-4 bg-dark-200/50 rounded-lg border border-dark-300 hover:border-primary-600/50 transition-colors cursor-pointer"
+                            >
+                                <div className="flex justify-between items-start mb-2">
+                                    <div className="text-sm font-medium text-primary-400">{receipt.reference}</div>
+                                    <span className={`text-xs px-2 py-1 rounded badge badge-${receipt.status?.toLowerCase() || 'draft'}`}>
+                                        {receipt.status || 'Draft'}
+                                    </span>
+                                </div>
+                                <div className="text-xs text-gray-400 space-y-1">
+                                    <p><strong>From:</strong> {receipt.supplier_name || 'Vendor'}</p>
+                                    <p><strong>To:</strong> {receipt.warehouse_name || 'Warehouse'}</p>
+                                    <p><strong>Date:</strong> {receipt.expected_date ? new Date(receipt.expected_date).toLocaleDateString() : new Date().toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Toolbar with Search and View Toggle */}
             <div className="flex items-center justify-between gap-4">
@@ -119,24 +149,24 @@ export default function Receipts() {
                                         <tr key={receipt.id} onClick={() => setSelectedReceiptId(receipt.id)} className="hover:bg-dark-200/50 transition-colors cursor-pointer">
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className="text-sm font-medium text-primary-400 hover:text-primary-300">
-                                                    {receipt.receiptNumber || 'WH/IN/0001'}
+                                                    {receipt.reference || 'WH/IN/0001'}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                                {receipt.supplier || 'Vendor'}
+                                                {receipt.supplier_name || 'Vendor'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                                {receipt.warehouse?.name || 'WH/Stock1'}
+                                                {receipt.warehouse_name || 'WH/Stock1'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                                {receipt.contactPerson || 'Anna Johnson'}
+                                                {receipt.created_by_name || 'User'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                                {receipt.scheduledDate ? new Date(receipt.scheduledDate).toLocaleDateString() : new Date().toLocaleDateString()}
+                                                {receipt.expected_date ? new Date(receipt.expected_date).toLocaleDateString() : new Date().toLocaleDateString()}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className={`badge badge-${receipt.status || 'ready'}`}>
-                                                    {receipt.status || 'Ready'}
+                                                <span className={`badge badge-${receipt.status?.toLowerCase() || 'draft'}`}>
+                                                    {receipt.status || 'Draft'}
                                                 </span>
                                             </td>
                                         </tr>
@@ -161,9 +191,9 @@ export default function Receipts() {
                                     onClick={() => setSelectedReceiptId(receipt.id)}
                                     className="block p-4 bg-dark-200/50 rounded-lg border border-dark-300 hover:border-primary-600/50 transition-colors cursor-pointer"
                                 >
-                                    <div className="text-sm font-medium text-primary-400">{receipt.receiptNumber || 'WH/IN/0001'}</div>
-                                    <div className="text-xs text-gray-400 mt-1">{receipt.supplier || 'Vendor'}</div>
-                                    <div className="text-xs text-gray-500 mt-2">{receipt.scheduledDate ? new Date(receipt.scheduledDate).toLocaleDateString() : new Date().toLocaleDateString()}</div>
+                                    <div className="text-sm font-medium text-primary-400">{receipt.reference || 'WH/IN/0001'}</div>
+                                    <div className="text-xs text-gray-400 mt-1">{receipt.supplier_name || 'Vendor'}</div>
+                                    <div className="text-xs text-gray-500 mt-2">{receipt.expected_date ? new Date(receipt.expected_date).toLocaleDateString() : new Date().toLocaleDateString()}</div>
                                 </div>
                             ))}
                         </div>
@@ -179,9 +209,9 @@ export default function Receipts() {
                                     onClick={() => setSelectedReceiptId(receipt.id)}
                                     className="block p-4 bg-dark-200/50 rounded-lg border border-dark-300 hover:border-yellow-600/50 transition-colors cursor-pointer"
                                 >
-                                    <div className="text-sm font-medium text-primary-400">{receipt.receiptNumber || 'WH/IN/0002'}</div>
-                                    <div className="text-xs text-gray-400 mt-1">{receipt.supplier || 'Vendor'}</div>
-                                    <div className="text-xs text-gray-500 mt-2">{receipt.scheduledDate ? new Date(receipt.scheduledDate).toLocaleDateString() : new Date().toLocaleDateString()}</div>
+                                    <div className="text-sm font-medium text-primary-400">{receipt.reference || 'WH/IN/0002'}</div>
+                                    <div className="text-xs text-gray-400 mt-1">{receipt.supplier_name || 'Vendor'}</div>
+                                    <div className="text-xs text-gray-500 mt-2">{receipt.expected_date ? new Date(receipt.expected_date).toLocaleDateString() : new Date().toLocaleDateString()}</div>
                                 </div>
                             ))}
                         </div>
@@ -197,9 +227,9 @@ export default function Receipts() {
                                     onClick={() => setSelectedReceiptId(receipt.id)}
                                     className="block p-4 bg-dark-200/50 rounded-lg border border-dark-300 hover:border-green-600/50 transition-colors cursor-pointer"
                                 >
-                                    <div className="text-sm font-medium text-primary-400">{receipt.receiptNumber || 'WH/IN/0003'}</div>
-                                    <div className="text-xs text-gray-400 mt-1">{receipt.supplier || 'Vendor'}</div>
-                                    <div className="text-xs text-gray-500 mt-2">{receipt.scheduledDate ? new Date(receipt.scheduledDate).toLocaleDateString() : new Date().toLocaleDateString()}</div>
+                                    <div className="text-sm font-medium text-primary-400">{receipt.reference || 'WH/IN/0003'}</div>
+                                    <div className="text-xs text-gray-400 mt-1">{receipt.supplier_name || 'Vendor'}</div>
+                                    <div className="text-xs text-gray-500 mt-2">{receipt.expected_date ? new Date(receipt.expected_date).toLocaleDateString() : new Date().toLocaleDateString()}</div>
                                 </div>
                             ))}
                         </div>

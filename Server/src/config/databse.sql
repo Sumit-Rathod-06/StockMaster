@@ -31,6 +31,12 @@ CREATE TABLE warehouses (
   name TEXT NOT NULL,
   code TEXT UNIQUE NOT NULL,
   address TEXT,
+  city TEXT,
+  state TEXT,
+  postal_code TEXT,
+  country TEXT,
+  contact_person TEXT,
+  contact_phone TEXT,
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMP DEFAULT now()
 );

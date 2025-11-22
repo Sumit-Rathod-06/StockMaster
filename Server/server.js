@@ -8,6 +8,8 @@ import category_router from "./src/routes/category.router.js";
 import receipt_router from "./src/routes/receipt.router.js";
 import delivery_router from "./src/routes/delivery.router.js";
 import adjustment_router from "./src/routes/adjustment.router.js";
+import transfer_router from "./src/routes/transfer.router.js";
+import warehouse_router from "./src/routes/warehouse.router.js";
 
 const app = express();
 
@@ -29,6 +31,8 @@ app.use('/api/categories', category_router);
 app.use('/api/receipts', receipt_router);
 app.use('/api/deliveries', delivery_router);
 app.use('/api/adjustments', adjustment_router);
+app.use('/api/transfers', transfer_router);
+app.use('/api/warehouses', warehouse_router);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

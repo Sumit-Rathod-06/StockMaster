@@ -24,12 +24,12 @@ export default function Transfers() {
     };
 
     const handleValidate = async (id) => {
-        if (!confirm('Validate this transfer? Stock will be moved.')) return;
+        if (!confirm('Complete this transfer?')) return;
         try {
-            await api.post(`/transfers/${id}/validate`);
+            await api.post(`/transfers/${id}/complete`);
             fetchTransfers();
         } catch (error) {
-            alert('Failed to validate transfer');
+            alert('Failed to complete transfer');
         }
     };
 
@@ -57,29 +57,37 @@ export default function Transfers() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                        {transfers.map((transfer) => (
-                            <tr key={transfer.id}>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{transfer.transferNumber}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">{transfer.fromWarehouse?.name}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">{transfer.toWarehouse?.name}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <span className={`badge badge-${transfer.status}`}>{transfer.status}</span>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                    {new Date(transfer.createdAt).toLocaleDateString()}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                                    <Link to={`/transfers/${transfer.id}`} className="text-primary-600 hover:text-primary-900 mr-4">
-                                        <FiEye className="inline h-4 w-4" />
-                                    </Link>
-                                    {transfer.status !== 'done' && (
-                                        <button onClick={() => handleValidate(transfer.id)} className="text-green-600 hover:text-green-900">
-                                            <FiCheck className="inline h-4 w-4" />
-                                        </button>
-                                    )}
+                        {transfers.length === 0 ? (
+                            <tr>
+                                <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                                    No transfers found
                                 </td>
                             </tr>
-                        ))}
+                        ) : (
+                            transfers.map((transfer) => (
+                                <tr key={transfer.id}>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{transfer.reference}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{transfer.from_warehouse_name}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{transfer.to_warehouse_name}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <span className={`badge badge-${transfer.status?.toLowerCase() || 'draft'}`}>{transfer.status}</span>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                        {new Date(transfer.created_at || transfer.transfer_date).toLocaleDateString()}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                        <Link to={`/transfers/${transfer.id}`} className="text-primary-600 hover:text-primary-900 mr-4">
+                                            <FiEye className="inline h-4 w-4" />
+                                        </Link>
+                                        {transfer.status?.toLowerCase() !== 'completed' && (
+                                            <button onClick={() => handleValidate(transfer.id)} className="text-green-600 hover:text-green-900">
+                                                <FiCheck className="inline h-4 w-4" />
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>

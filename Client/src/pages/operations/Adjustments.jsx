@@ -48,23 +48,31 @@ export default function Adjustments() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                        {adjustments.map((adj) => (
-                            <tr key={adj.id}>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{adj.adjustmentNumber}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">{adj.product?.name}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">{adj.warehouse?.name}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">{parseFloat(adj.recordedQuantity).toFixed(2)}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">{parseFloat(adj.countedQuantity).toFixed(2)}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <span className={`text-sm font-semibold ${parseFloat(adj.difference) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                        {parseFloat(adj.difference) >= 0 ? '+' : ''}{parseFloat(adj.difference).toFixed(2)}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                    {new Date(adj.createdAt).toLocaleDateString()}
+                        {adjustments.length === 0 ? (
+                            <tr>
+                                <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
+                                    No adjustments found
                                 </td>
                             </tr>
-                        ))}
+                        ) : (
+                            adjustments.map((adj) => (
+                                <tr key={adj.id}>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{adj.reference || adj.id}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{adj.product_name || 'Unknown'}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{adj.warehouse_name || 'Unknown'}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{parseFloat(adj.recorded_quantity || 0).toFixed(2)}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{parseFloat(adj.counted_quantity || 0).toFixed(2)}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <span className={`text-sm font-semibold ${(adj.quantity_difference || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                            {(adj.quantity_difference || 0) >= 0 ? '+' : ''}{parseFloat(adj.quantity_difference || 0).toFixed(2)}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                        {new Date(adj.created_at).toLocaleDateString()}
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>

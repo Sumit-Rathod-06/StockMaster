@@ -9,7 +9,13 @@ export default function WarehouseForm() {
     const [formData, setFormData] = useState({
         name: '',
         code: '',
-        address: ''
+        address: '',
+        city: '',
+        state: '',
+        postal_code: '',
+        country: '',
+        contact_person: '',
+        contact_phone: ''
     });
     const [loading, setLoading] = useState(false);
 
@@ -66,7 +72,7 @@ export default function WarehouseForm() {
                     <div className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Name:
+                                Name: <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="text"
@@ -80,7 +86,7 @@ export default function WarehouseForm() {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Short Code:
+                                Short Code: <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="text"
@@ -103,6 +109,88 @@ export default function WarehouseForm() {
                                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                                 placeholder="Enter warehouse address"
                             />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    City:
+                                </label>
+                                <input
+                                    type="text"
+                                    className="input-field w-full"
+                                    value={formData.city}
+                                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                                    placeholder="City"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    State:
+                                </label>
+                                <input
+                                    type="text"
+                                    className="input-field w-full"
+                                    value={formData.state}
+                                    onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                                    placeholder="State"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Postal Code:
+                                </label>
+                                <input
+                                    type="text"
+                                    className="input-field w-full"
+                                    value={formData.postal_code}
+                                    onChange={(e) => setFormData({ ...formData, postal_code: e.target.value })}
+                                    placeholder="Postal code"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Country:
+                                </label>
+                                <input
+                                    type="text"
+                                    className="input-field w-full"
+                                    value={formData.country}
+                                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                                    placeholder="Country"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Contact Person:
+                                </label>
+                                <input
+                                    type="text"
+                                    className="input-field w-full"
+                                    value={formData.contact_person}
+                                    onChange={(e) => setFormData({ ...formData, contact_person: e.target.value })}
+                                    placeholder="Contact person name"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Contact Phone:
+                                </label>
+                                <input
+                                    type="text"
+                                    className="input-field w-full"
+                                    value={formData.contact_phone}
+                                    onChange={(e) => setFormData({ ...formData, contact_phone: e.target.value })}
+                                    placeholder="Phone number"
+                                />
+                            </div>
                         </div>
                     </div>
 

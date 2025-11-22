@@ -74,19 +74,55 @@ export default function Dashboard() {
 
     const fetchDashboardData = async () => {
         try {
-            const [statsRes, lowStockRes, activitiesRes] = await Promise.all([
-                api.get('/dashboard/stats'),
+            const [kpisRes, lowStockRes, receiptsRes, deliveriesRes] = await Promise.all([
+                api.get('/dashboard/kpis'),
                 api.get('/dashboard/low-stock'),
-                api.get('/dashboard/activities?limit=5')
+                api.get('/dashboard/pending-receipts'),
+                api.get('/dashboard/pending-deliveries')
             ]);
 
-            setStats(statsRes.data.data);
-            setLowStockItems(lowStockRes.data.data);
-            setActivities(activitiesRes.data.data);
+            setStats({
+                pendingReceipts: kpisRes.data.data.pending_receipts.count,
+                pendingDeliveries: kpisRes.data.data.pending_deliveries.count,
+                totalProducts: kpisRes.data.data.total_products_in_stock.total_products,
+                lowStockCount: kpisRes.data.data.low_stock_items.low_stock
+            });
+            
+            const lowStockItems = lowStockRes.data.data.items || [];
+            setLowStockItems(lowStockItems.map(item => ({
+                id: item.id,
+                product: { name: item.name, minStockLevel: item.reorder_level },
+                warehouse: { name: item.warehouse_name },
+                quantity: item.quantity
+            })));
+            
+            const receipts = receiptsRes.data.data.receipts || [];
+            const deliveries = deliveriesRes.data.data.deliveries || [];
+            const allActivities = [
+                ...receipts.map(r => ({
+                    type: 'receipt',
+                    receiptNumber: r.reference,
+                    status: r.status,
+                    createdAt: r.expected_date
+                })),
+                ...deliveries.map(d => ({
+                    type: 'delivery',
+                    deliveryNumber: d.reference,
+                    status: d.status,
+                    createdAt: d.scheduled_date
+                }))
+            ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+            
+            setActivities(allActivities);
         } catch (error) {
             console.error('Failed to fetch dashboard data:', error);
             // Set empty data on error so page still renders
-            setStats({});
+            setStats({
+                pendingReceipts: 0,
+                pendingDeliveries: 0,
+                totalProducts: 0,
+                lowStockCount: 0
+            });
             setLowStockItems([]);
             setActivities([]);
         } finally {

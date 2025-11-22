@@ -28,15 +28,15 @@ export default function Deliveries() {
     };
 
     const filteredDeliveries = deliveries.filter(delivery =>
-        delivery.deliveryNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        delivery.customer?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        delivery.contactPerson?.toLowerCase().includes(searchQuery.toLowerCase())
+        delivery.reference?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        delivery.customer_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        delivery.created_by_name?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const groupedByStatus = {
-        ready: filteredDeliveries.filter(d => d.status === 'ready'),
-        waiting: filteredDeliveries.filter(d => d.status === 'waiting'),
-        done: filteredDeliveries.filter(d => d.status === 'done')
+        ready: filteredDeliveries.filter(d => d.status?.toLowerCase() === 'ready'),
+        waiting: filteredDeliveries.filter(d => d.status?.toLowerCase() === 'waiting'),
+        done: filteredDeliveries.filter(d => d.status?.toLowerCase() === 'done')
     };
 
     if (loading) return <div className="text-center py-12 text-gray-400">Loading...</div>;
@@ -119,24 +119,24 @@ export default function Deliveries() {
                                         <tr key={delivery.id} onClick={() => setSelectedDeliveryId(delivery.id)} className="hover:bg-dark-200/50 transition-colors cursor-pointer">
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className="text-sm font-medium text-primary-400 hover:text-primary-300">
-                                                    {delivery.deliveryNumber || 'WH/OUT/0001'}
+                                                    {delivery.reference || 'WH/OUT/0001'}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                                {delivery.warehouse?.name || 'WH/Stock1'}
+                                                {delivery.warehouse_name || 'WH/Stock1'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                                {delivery.customer || 'vendor'}
+                                                {delivery.customer_name || 'vendor'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                                {delivery.contactPerson || 'Anna Johnson'}
+                                                {delivery.created_by_name || 'User'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                                {delivery.scheduledDate ? new Date(delivery.scheduledDate).toLocaleDateString() : new Date().toLocaleDateString()}
+                                                {delivery.scheduled_date ? new Date(delivery.scheduled_date).toLocaleDateString() : new Date().toLocaleDateString()}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className={`badge badge-${delivery.status || 'ready'}`}>
-                                                    {delivery.status || 'Ready'}
+                                                <span className={`badge badge-${delivery.status?.toLowerCase() || 'draft'}`}>
+                                                    {delivery.status || 'Draft'}
                                                 </span>
                                             </td>
                                         </tr>
@@ -161,9 +161,9 @@ export default function Deliveries() {
                                     onClick={() => setSelectedDeliveryId(delivery.id)}
                                     className="block p-4 bg-dark-200/50 rounded-lg border border-dark-300 hover:border-primary-600/50 transition-colors cursor-pointer"
                                 >
-                                    <div className="text-sm font-medium text-primary-400">{delivery.deliveryNumber || 'WH/OUT/0001'}</div>
-                                    <div className="text-xs text-gray-400 mt-1">{delivery.customer || 'vendor'}</div>
-                                    <div className="text-xs text-gray-500 mt-2">{delivery.scheduledDate ? new Date(delivery.scheduledDate).toLocaleDateString() : new Date().toLocaleDateString()}</div>
+                                    <div className="text-sm font-medium text-primary-400">{delivery.reference || 'WH/OUT/0001'}</div>
+                                    <div className="text-xs text-gray-400 mt-1">{delivery.customer_name || 'vendor'}</div>
+                                    <div className="text-xs text-gray-500 mt-2">{delivery.scheduled_date ? new Date(delivery.scheduled_date).toLocaleDateString() : new Date().toLocaleDateString()}</div>
                                 </div>
                             ))}
                         </div>
@@ -179,9 +179,9 @@ export default function Deliveries() {
                                     onClick={() => setSelectedDeliveryId(delivery.id)}
                                     className="block p-4 bg-dark-200/50 rounded-lg border border-dark-300 hover:border-yellow-600/50 transition-colors cursor-pointer"
                                 >
-                                    <div className="text-sm font-medium text-primary-400">{delivery.deliveryNumber || 'WH/OUT/0002'}</div>
-                                    <div className="text-xs text-gray-400 mt-1">{delivery.customer || 'vendor'}</div>
-                                    <div className="text-xs text-gray-500 mt-2">{delivery.scheduledDate ? new Date(delivery.scheduledDate).toLocaleDateString() : new Date().toLocaleDateString()}</div>
+                                    <div className="text-sm font-medium text-primary-400">{delivery.reference || 'WH/OUT/0002'}</div>
+                                    <div className="text-xs text-gray-400 mt-1">{delivery.customer_name || 'vendor'}</div>
+                                    <div className="text-xs text-gray-500 mt-2">{delivery.scheduled_date ? new Date(delivery.scheduled_date).toLocaleDateString() : new Date().toLocaleDateString()}</div>
                                 </div>
                             ))}
                         </div>
@@ -197,9 +197,9 @@ export default function Deliveries() {
                                     onClick={() => setSelectedDeliveryId(delivery.id)}
                                     className="block p-4 bg-dark-200/50 rounded-lg border border-dark-300 hover:border-green-600/50 transition-colors cursor-pointer"
                                 >
-                                    <div className="text-sm font-medium text-primary-400">{delivery.deliveryNumber || 'WH/OUT/0003'}</div>
-                                    <div className="text-xs text-gray-400 mt-1">{delivery.customer || 'vendor'}</div>
-                                    <div className="text-xs text-gray-500 mt-2">{delivery.scheduledDate ? new Date(delivery.scheduledDate).toLocaleDateString() : new Date().toLocaleDateString()}</div>
+                                    <div className="text-sm font-medium text-primary-400">{delivery.reference || 'WH/OUT/0003'}</div>
+                                    <div className="text-xs text-gray-400 mt-1">{delivery.customer_name || 'vendor'}</div>
+                                    <div className="text-xs text-gray-500 mt-2">{delivery.scheduled_date ? new Date(delivery.scheduled_date).toLocaleDateString() : new Date().toLocaleDateString()}</div>
                                 </div>
                             ))}
                         </div>

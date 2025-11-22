@@ -26,7 +26,7 @@ export default function ProductForm() {
 
     const fetchCategories = async () => {
         try {
-            const res = await api.get('/products/categories/all');
+            const res = await api.get('/categories');
             setCategories(res.data.data);
         } catch (error) {
             console.error('Failed to fetch categories:', error);
